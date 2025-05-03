@@ -1,32 +1,48 @@
 import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from "uuid"; // to make file names unique
 
-const supabase = createClient(
+export const supabase = createClient(
     'https://ikzwpgecawpusbzznpob.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrendwZ2VjYXdwdXNienpucG9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU1NzgzNjIsImV4cCI6MjA2MTE1NDM2Mn0.ixyDJQIp8h2Whu4EMIHSpZHjGC-Z-p1G_mGKNltpUo0')
 
-export async function getAllRequests() {
-    const { data, error } = await supabase
-        .from('requests')
-        .select('*');
-    
+export async function getAllRequests({ exclude_statuses = [], user_id } = {}) {
+  let query = supabase.from("requests").select("*");
 
-    
-    // Add username and email
-    const updatedRequestsArray= await Promise.all(
-        data.map(async (request) => {
-            const name = await getUserName(request.user_id); // await a promise
-            const email_address = await getUserEmail(request.user_id)
-            const signed_link = await generateRequestDownloadLink(request.file_url)
-            return {
-            ...request,
-            name: name, // add new data to the item
-            email_address: email_address,
-            signed_link: signed_link
-            };
-        })
-    );
-    console.log(updatedRequestsArray);
-    return updatedRequestsArray;
+  // ✅ Exclude one or more statuses
+  if (exclude_statuses.length === 1) {
+    query = query.not("status", "eq", exclude_statuses[0]);
+  } else if (exclude_statuses.length > 1) {
+    query = query.not("status", "in", `(${exclude_statuses.join(",")})`);
+  }
+
+  // ✅ Optionally filter by user_id
+  if (user_id) {
+    query = query.eq("user_id", user_id);
+  }
+
+  const { data, error } = await query;
+
+  if (error || !data) {
+    console.error("Failed to fetch requests:", error);
+    return [];
+  }
+
+  // Enrich results
+  const requests = await Promise.all(
+    data.map(async (request) => {
+      const name = await getUserNameFromProfile(request.user_id);
+      const email_address = await getUserEmail(request.user_id);
+      const signed_link = await generateRequestDownloadLink(request.file_url);
+
+      return {
+        ...request,
+        name,
+        email_address,
+        signed_link,
+      };
+    })
+  );
+
+  return requests;
 }
 
 export async function getUserName(userId) {
@@ -40,14 +56,28 @@ export async function getUserName(userId) {
     return data.name;
 }
 
+export async function getUserNameFromProfile(userId) {
+  const { data: profile, error: profileError } = await supabase
+  .from('profiles')
+  .select('name')
+  .eq('id', userId)
+  .single()
+
+if (profileError) {
+  console.error('Error fetching profile:', profileError.message)
+  return null
+}
+
+return profile.name
+}
+
 export async function getUserEmail(userId) {
     const { data, error } = await supabase
-        .from('users')
+        .from('profiles')
         .select('email_address')
         .eq('id', userId)
         .single(); // because you expect only one user
 
-    console.log(error);
     return data.email_address;
 }
 
@@ -59,7 +89,7 @@ export async function uploadFile(file) {
         cacheControl: '3600',
         upsert: false
     })
-
+    console.log(error);
     return data;
 }
 
@@ -134,8 +164,55 @@ export async function generateRequestDownloadLink(file_url) {
     if (error) {
     console.error('Error creating signed URL:', error);
     } else {
-    console.log('Signed URL:', data.signedUrl);
-    // You can use this signed URL to download the file securely
     return data.signedUrl;
     }
 }
+
+export async function handleSignUp({email, password, name, age}) {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (error) {
+        console.error('Sign Up error:', error.message);
+    }
+  }
+
+  export async function getCurrentUser() {
+    const {
+      data: { user },
+      error
+    } = await supabase.auth.getUser();
+  
+    if (error || !user) {
+      console.error("User not found or session error:", error?.message);
+      return null;
+    }
+  
+    return user;
+  }
+
+  export async function handleLogout() {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Logout error:', error.message);
+    } else {
+      console.log('User signed out successfully.');
+    }
+  }
+
+  export async function createUserProfile({id, name, email_address, age}) {
+    const { error } = await supabase.from("profiles").insert([
+      {
+        id: id, // Use this as the primary or foreign key
+        name: name,
+        email_address: email_address,
+        age: age,
+        // Add any other fields from formData you want
+      },
+    ]);
+
+    return error;
+  }
+

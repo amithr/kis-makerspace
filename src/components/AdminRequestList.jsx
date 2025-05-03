@@ -13,7 +13,6 @@ function AdminRequestList() {
       async function fetchData() {
           const data = await getAllRequests();
           setRequests(data);
-          console.log(data);
       }
       fetchData();
   }, []);

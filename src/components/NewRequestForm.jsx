@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
-import { uploadFile, createRequest } from '../utilities/Supabase';
+import { uploadFile, createRequest, supabase, getCurrentUser } from '../utilities/Supabase';
 
 function RequestForm() {
   const [type, setType] = useState("3D Printer");
@@ -10,19 +10,22 @@ function RequestForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(file);
-
-    //Upload file
+  
+    // Get current user
+    const user = await getCurrentUser();
+  
+    // Upload file
     const response = await uploadFile(file);
-    console.log("File uploaded:", response.path);
 
+  
     const requestData = {
-      user_id: 1, // replace with actual user
+      user_id: user.id, // now using actual user ID
       type,
       file_url: response.path,
-      status:"received",
+      status: "received",
       notes,
     };
-
+  
     await createRequest(requestData);
   };
 

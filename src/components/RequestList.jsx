@@ -4,30 +4,24 @@ import {getAllRequests, getUserName} from '../utilities/Supabase';
 import { useEffect, useState } from 'react';
 
 
-function RequestList() {
+function RequestList({ criteria = {}}) {
+    const { exclude_statuses, user_id } = criteria;
     const [requests, setRequests] = useState([]);
 
     useEffect(() => {
         async function fetchData() {
-            const requestsArray = await getAllRequests();
-            console.log(requestsArray);
+            const requestsArray = await getAllRequests({ exclude_statuses: exclude_statuses, user_id: user_id})
             setRequests(requestsArray);
         }
         fetchData();
         //const interval = setInterval(fetchData, 1000); // every 1 second
         //return () => clearInterval(interval);
-    }, []);
+    }, [exclude_statuses, user_id]);
 
     const formatDate = (timestamp) => {
         const date = new Date(timestamp);
         return date.toLocaleString(); // or use .toLocaleDateString() for just the date
     };
-
-    async function getUserNameFromId(id) {
-        const name = await getUserName(id).name
-        return name;
-    }
-
 
     return (
         <Table striped bordered hover>
@@ -42,8 +36,8 @@ function RequestList() {
             </thead>
             <tbody>
             {requests.map((request, index) => (
-                <tr key={index + 1}>
-                    <td>{index}</td>
+                <tr key={index}>
+                    <td>{index + 1}</td>
                     <td>{request.name}</td>
                     <td>{request.status}</td>
                     <td>{request.type}</td>

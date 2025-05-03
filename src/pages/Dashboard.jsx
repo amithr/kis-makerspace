@@ -4,7 +4,6 @@ import Col from 'react-bootstrap/Col';
 import NavBar from '../components/NavBar';
 import RequestList from '../components/RequestList';
 import NewRequestForm from '../components/NewRequestForm';
-import { useEffect, useState } from 'react';
 
 
 
@@ -13,11 +12,11 @@ function Dashboard() {
   return (
     <>
       <Container fluid>
-        <Row id="nav-bar">
+        <Row id="nav-bar" className = "mb-4 mt-3">
           <Col><NavBar /></Col>
         </Row>
         <Row id="workload">
-          <Col></Col>
+          <Col><RequestList /></Col>
           <Col><NewRequestForm /></Col>
         </Row>
     </Container>

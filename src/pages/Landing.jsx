@@ -3,16 +3,13 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import LoginBar from '../components/LoginBar';
 import RequestList from '../components/RequestList';
-import { useEffect, useState } from 'react';
-
-
 
 function Landing() {
 
   return (
     <>
       <Container fluid>
-        <Row id="nav-bar">
+        <Row id="nav-bar" className = "mb-4 mt-3">
           <Col><LoginBar /></Col>
         </Row>
         <Row id="workload">
