@@ -186,7 +186,6 @@ export async function handleSignUp({email, password, name, age}) {
     } = await supabase.auth.getUser();
   
     if (error || !user) {
-      console.error("User not found or session error:", error?.message);
       return null;
     }
   

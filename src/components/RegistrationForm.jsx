@@ -37,10 +37,10 @@ function RegistrationForm() {
       return;
     }
   
-    if (!emailRegex.test(formData.email)) {
-      setError("Email must be a kyiv.qsi.org email address.");
-      return;
-    }
+    // if (!emailRegex.test(formData.email)) {
+    //   setError("Email must be a kyiv.qsi.org email address.");
+    //   return;
+    // }
   
     if (parseInt(formData.age, 10) >= 100) {
       setError("Age must be less than 100.");

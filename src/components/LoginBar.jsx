@@ -7,13 +7,15 @@ import { useEffect, useState } from 'react';
 
 
 function LoginBar() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState([]);
   const navigate = useNavigate();
 
-  
   useEffect(() => {
-    const user = getCurrentUser();
-    setUser(user);
+    async function loadCurrentUser() {
+      const user = await getCurrentUser();
+      setUser(user);
+    }
+    loadCurrentUser();
   }, []);
 
   const goToLogin = () => {
@@ -28,6 +30,11 @@ function LoginBar() {
     navigate("/dashboard");
   };
 
+  const logout = () => {
+    handleLogout();
+    navigate("/");
+  }
+
   return (
     <Stack direction="horizontal" gap={3}>
       <div className="p-2">KIS Makerspace</div>
@@ -35,7 +42,7 @@ function LoginBar() {
         {user ? (
           <>
             <Button variant="success" onClick={goToDashboard}>Dashboard</Button>
-            <Button variant="danger" onClick={handleLogout}>Logout</Button>
+            <Button variant="danger" onClick={logout}>Logout</Button>
           </>
         ) : (
           <>

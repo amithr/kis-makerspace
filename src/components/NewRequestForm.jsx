@@ -10,14 +10,11 @@ function RequestForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(file);
-  
     // Get current user
     const user = await getCurrentUser();
-  
     // Upload file
     const response = await uploadFile(file);
-
-  
+    
     const requestData = {
       user_id: user.id, // now using actual user ID
       type,
