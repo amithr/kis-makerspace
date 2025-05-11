@@ -1,4 +1,5 @@
 import './stylesheets/App.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useEffect, useState } from 'react';
 import { supabase } from './utilities/Supabase';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";

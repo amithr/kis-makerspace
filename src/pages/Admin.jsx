@@ -3,6 +3,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import NewRequestForm from "../components/NewRequestForm";
 import NavBar from "../components/NavBar";
+import LoginBar from '../components/LoginBar';
 import AdminRequestList from "../components/AdminRequestList";
 
 
@@ -11,7 +12,7 @@ function Admin() {
       <>
       <Container fluid>
         <Row id="nav-bar" className = "mb-4 mt-3">
-          <Col><NavBar /></Col>
+          <Col><LoginBar /></Col>
         </Row>
         <Row id="workload">
           <Col><AdminRequestList /></Col>

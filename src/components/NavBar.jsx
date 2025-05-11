@@ -12,7 +12,7 @@ function NavBar() {
   }
   return (
     <Stack direction="horizontal" gap={3}>
-        <div className="p-2">KIS Makerspace</div>
+        <h1>KIS Makerspace</h1>
         <div className="ms-auto d-flex gap-2">
           <Button variant="success" onClick={goToLandingPage}>Home</Button>
           <Button variant="danger" onClick={handleLogout}>Logout</Button>

@@ -56,7 +56,7 @@ function LoginForm() {
   return (
     <Container className="mt-5">
       <Row className="justify-content-md-center">
-        <Col md={6}>
+        <Col >
           <h2 className="mb-4">Login Form</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           {success && <Alert variant="success">{success}</Alert>}
@@ -85,7 +85,7 @@ function LoginForm() {
               />
             </Form.Group>
 
-            <Button variant="primary" type="submit">
+            <Button variant="danger" type="submit">
               Login
             </Button>
           </Form>

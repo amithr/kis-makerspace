@@ -30,24 +30,31 @@ function LoginBar() {
     navigate("/dashboard");
   };
 
-  const logout = () => {
-    handleLogout();
+  const goHome = () => {
     navigate("/");
+  };
+
+  const logout = async () => {
+    await handleLogout();
+    window.location.href = "/";
   }
 
   return (
     <Stack direction="horizontal" gap={3}>
-      <div className="p-2">KIS Makerspace</div>
+      <a href="/" className="text-decoration-none"><h1 className="text-danger">KIS Makerspace  <i className="bi bi-gear"></i></h1></a>
       <div className="ms-auto d-flex gap-2">
+      <i className="bi bi-instagram fs-3 text-danger"></i>
+      <p> </p>
         {user ? (
           <>
-            <Button variant="success" onClick={goToDashboard}>Dashboard</Button>
+            <Button variant="danger" onClick={goHome}>Home</Button>
+            <Button variant="danger" onClick={goToDashboard}>Requests</Button>
             <Button variant="danger" onClick={logout}>Logout</Button>
           </>
         ) : (
           <>
-            <Button variant="primary" onClick={goToLogin}>Login</Button>
-            <Button variant="primary" onClick={goToRegistration}>Register</Button>
+            <Button variant="danger" onClick={goToLogin}>Login/Register</Button>
+            <Button variant="danger" onClick={goHome}>Home</Button>
           </>
         )}
       </div>

@@ -1,8 +1,11 @@
 import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from "uuid"; // to make file names unique
 
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
 export const supabase = createClient(
-    'https://ikzwpgecawpusbzznpob.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrendwZ2VjYXdwdXNienpucG9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU1NzgzNjIsImV4cCI6MjA2MTE1NDM2Mn0.ixyDJQIp8h2Whu4EMIHSpZHjGC-Z-p1G_mGKNltpUo0')
+  supabaseUrl, supabaseAnonKey)
 
 export async function getAllRequests({ exclude_statuses = [], user_id } = {}) {
   let query = supabase.from("requests").select("*");

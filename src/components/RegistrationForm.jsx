@@ -103,7 +103,7 @@ function RegistrationForm() {
   return (
     <Container className="mt-5">
       <Row className="justify-content-md-center">
-        <Col md={6}>
+        <Col>
           <h2 className="mb-4">Registration Form</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           {success && <Alert variant="success">{success}</Alert>}
@@ -169,7 +169,7 @@ function RegistrationForm() {
               />
             </Form.Group>
 
-            <Button variant="primary" type="submit">
+            <Button variant="danger" type="submit">
               Submit
             </Button>
           </Form>

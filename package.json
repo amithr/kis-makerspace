@@ -14,10 +14,13 @@
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/supabase-js": "^2.49.4",
     "bootstrap": "^5.3.5",
+    "bootstrap-icons": "^1.13.1",
+    "canvas-confetti": "^1.9.3",
     "firebase": "^11.6.0",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^19.0.0",
+    "resend": "^4.5.1",
     "uuid": "^11.1.0"
   },
   "devDependencies": {

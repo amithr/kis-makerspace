@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
 import { getAllRequests, updateRequest, deleteRequest, generateRequestDownloadLink } from '../utilities/Supabase';
 import Table from 'react-bootstrap/Table';
-import EditableText from './EditableText';
 import EditableSelect from './EditableSelect';
 import Button from 'react-bootstrap/Button';
 
 function AdminRequestList() {
   const [requests, setRequests] = useState([]);
-  const [downloadUrl, setDownloadUrl] = useState(null);
   
   useEffect(() => {
       async function fetchData() {
@@ -62,8 +60,8 @@ function AdminRequestList() {
                         }}
                         />
                     </td>
-                    <td>{formatDate(request.created_at)}</td>
                     <td><Button variant="success" as="a" href={request.signed_link} download>Download</Button></td>
+                    <td>{formatDate(request.created_at)}</td>
                     <td><Button variant="danger" onClick={() => removeRequest(request.id)}>Delete</Button></td>
                 </tr>
             ))}
