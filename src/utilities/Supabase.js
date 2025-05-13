@@ -97,52 +97,53 @@ export async function uploadFile(file) {
 }
 
 export async function createRequest({ user_id, type, file_url, notes, status }) {
-    const { data, error } = await supabase
-      .from('requests')
-      .insert([
-        {
-          user_id: user_id,
-          type: type,
-          file_url: file_url,
-          notes: notes,
-          status: status,
-        }
-      ])
-      .select(); // optional: returns the inserted row(s)
-  
-    if (error) {
-      console.error('Error inserting request:', error);
-      return null;
-    }
-  
-    return data;
+  const { data, error } = await supabase
+    .from('requests')
+    .insert([
+      {
+        user_id: user_id,
+        type: type,
+        file_url: file_url,
+        notes: notes,
+        status: status,
+      }
+    ])
+    .select(); // optional: returns the inserted row(s)
+
+  if (error) {
+    console.error('Error inserting request:', error);
+    return null;
   }
 
-  export async function updateRecordById({ table, id, updates }) {
-    const { data, error } = await supabase
-      .from(table)
-      .update(updates)
-      .eq('id', id)    // always match the 'id' field
-      .select();       // optional: return the updated row
-  
-    if (error) {
-      console.error(`Error updating ${table} record with id ${id}:`, error);
-      return null;
-    }
-  
-    return data;
+  return data;
+}
+
+export async function updateRecordById({ table, id, updates }) {
+  const { data, error } = await supabase
+    .from(table)
+    .update(updates)
+    .eq('id', id)    // always match the 'id' field
+    .select();       // optional: return the updated row
+
+  if (error) {
+    console.error(`Error updating ${table} record with id ${id}:`, error);
+    return null;
   }
 
-  export async function updateRequest(id, field, newValue) {
-    const data = updateRecordById(
-        {
-            table: 'requests',
-            id: id,
-            updates: {[field]: newValue}
-        }
-    )
-    return data;
-  }
+  return data;
+}
+
+export async function updateRequest(id, field, newValue) {
+  const data = updateRecordById(
+      {
+          table: 'requests',
+          id: id,
+          updates: {[field]: newValue}
+      }
+  )
+  
+  return data;
+}
 
 export async function deleteRequest(id) {
   const { data, error } = await supabase
@@ -172,49 +173,86 @@ export async function generateRequestDownloadLink(file_url) {
 }
 
 export async function handleSignUp({email, password, name, age}) {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+  });
 
-    if (error) {
-        console.error('Sign Up error:', error.message);
-    }
+  if (error) {
+      console.error('Sign Up error:', error.message);
+  }
+}
+
+export async function getCurrentUser() {
+  const {
+    data: { user },
+    error
+  } = await supabase.auth.getUser();
+
+  if (error || !user) {
+    return null;
   }
 
-  export async function getCurrentUser() {
-    const {
-      data: { user },
-      error
-    } = await supabase.auth.getUser();
-  
-    if (error || !user) {
-      return null;
-    }
-  
-    return user;
+  return user;
+}
+
+export async function handleLogout() {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    console.error('Logout error:', error.message);
+  } else {
+    console.log('User signed out successfully.');
+  }
+}
+
+export async function createUserProfile({id, name, email_address, age}) {
+  const { error } = await supabase.from("profiles").insert([
+    {
+      id: id, // Use this as the primary or foreign key
+      name: name,
+      email_address: email_address,
+      age: age,
+      // Add any other fields from formData you want
+    },
+  ]);
+
+  return error;
+}
+
+export async function sendEmail({
+  to,
+  subject,
+  html,
+}) {
+  // Step 1: Get the current user's access token
+  const {
+    data: { session },
+    error,
+  } = await supabase.auth.getSession();
+
+  if (error || !session) {
+    console.error("No session found or failed to retrieve it.");
+    return { success: false, message: "User not authenticated" };
   }
 
-  export async function handleLogout() {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error('Logout error:', error.message);
-    } else {
-      console.log('User signed out successfully.');
-    }
+  const accessToken = session.access_token;
+
+  // Step 2: Make request to Supabase Edge Function
+  const response = await fetch("https://ikzwpgecawpusbzznpob.supabase.co/functions/v1/resend-email", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ to, subject, html }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("Failed to send email:", errorText);
+    return { success: false, message: errorText };
   }
 
-  export async function createUserProfile({id, name, email_address, age}) {
-    const { error } = await supabase.from("profiles").insert([
-      {
-        id: id, // Use this as the primary or foreign key
-        name: name,
-        email_address: email_address,
-        age: age,
-        // Add any other fields from formData you want
-      },
-    ]);
-
-    return error;
-  }
-
+  const result = await response.json();
+  return { success: true, data: result };
+}

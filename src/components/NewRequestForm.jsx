@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Form, Button, Row, Col, Alert } from "react-bootstrap";
-import { uploadFile, createRequest, supabase, getCurrentUser } from '../utilities/Supabase';
+import { uploadFile, createRequest, sendEmail, getCurrentUser, getUserEmail } from '../utilities/Supabase';
 import confetti from "canvas-confetti";
 
 function RequestForm() {
@@ -39,6 +39,15 @@ function RequestForm() {
           origin: { y: 0.6 },
         });
         setSuccessMessage("✅ Request submitted successfully!");
+
+        console.log(getUserEmail(user.id))
+
+        await sendEmail({
+          to: await getUserEmail(user.id),
+          subject: "Request submitted",
+          html: "<p>Congratulations, you have successfully submitted your request! You'll more email updates on it's status soon.</p>",
+        });
+
       } else {
         setErrorMessage("❌ Failed to submit request. Please try again.");
       }

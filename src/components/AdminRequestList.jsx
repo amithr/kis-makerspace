@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAllRequests, updateRequest, deleteRequest, generateRequestDownloadLink } from '../utilities/Supabase';
+import { getAllRequests, updateRequest, deleteRequest, sendEmail } from '../utilities/Supabase';
 import Table from 'react-bootstrap/Table';
 import EditableSelect from './EditableSelect';
 import Button from 'react-bootstrap/Button';
@@ -24,6 +24,26 @@ function AdminRequestList() {
     const data = await deleteRequest(id);
     setRequests(prevRequests => prevRequests.filter(request => request.id !== id));
   }
+  async function updateStatus(requestId, requestEmailAddress, newStatus) {
+    let subject = "";
+    let message = "";
+
+    updateRequest(requestId, 'status', newStatus);
+    
+    switch(newStatus) {
+      case "In-Progress":
+        subject = "Request in-progress."
+        message = "<p>Your request is currently being processed. You will receive another email when it is complete.</p>"
+      case "Ready for Pickup":
+        subject = "Request is ready for pickup."
+        message = "<p>Stop by Mr. Amith's room to pick up your request!</p>"
+    }
+    const result = await sendEmail({
+      to: requestEmailAddress,
+      subject: subject,
+      html: message,
+    });
+  }
 
   return (
     <Table striped bordered hover>
@@ -47,7 +67,7 @@ function AdminRequestList() {
                       initialValue={request.status}
                       options={["Received", "In-Progress", "Finished", "Ready for Pickup"]}
                       onSave={(newStatus) => {
-                        updateRequest(request.id, 'status', newStatus);
+                        updateStatus(request.id, request.email_address, newStatus)
                       }}
                       />
                     </td>

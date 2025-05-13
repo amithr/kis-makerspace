@@ -103,7 +103,7 @@ function RegistrationForm() {
   return (
     <Container className="mt-5">
       <Row className="justify-content-md-center">
-        <Col>
+        <Col className="px-3">
           <h2 className="mb-4">Registration Form</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           {success && <Alert variant="success">{success}</Alert>}

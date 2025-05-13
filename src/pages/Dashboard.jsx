@@ -28,13 +28,13 @@ function Dashboard() {
           <Col className="mx-3"><LoginBar /></Col>
         </Row>
         <Row id="workload">
-          <Col className="mx-3">
+          <Col xs={12} md={6} lg={6} className="mb-3 px-3">
             <Stack direction="vertical" gap={3}>
               <h3>Current Requests</h3>
               <RequestList criteria={{ userId: userId, shouldBeFiltered: true}}/>
             </Stack>
           </Col>
-          <Col className="mx-3">
+          <Col xs={12} md={6} lg={6} className="mb-3 px-3">
             <Stack direction="vertical" gap={3}>
               <h3>Submit a Request</h3>
               <NewRequestForm />
