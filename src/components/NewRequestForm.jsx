@@ -45,7 +45,7 @@ function RequestForm() {
         await sendEmail({
           to: await getUserEmail(user.id),
           subject: "Request submitted",
-          html: "<p>Congratulations, you have successfully submitted your request! You'll more email updates on it's status soon.</p>",
+          html: "<p>Congratulations, you have successfully submitted your request! You'll receive more email updates on it's status soon.</p>",
         });
 
       } else {
@@ -74,21 +74,24 @@ function RequestForm() {
             <Form.Label>Type</Form.Label>
             <Form.Select value={type} onChange={(e) => setType(e.target.value)}>
               <option value="3D Printer">3D Printer</option>
-              <option value="Laser Cutter">Laser Cutter</option>
             </Form.Select>
           </Col>
         </Row>
 
         <Form.Group className="mb-3">
-          <Form.Label>Upload File</Form.Label>
-          <Form.Control type="file" onChange={(e) => setFile(e.target.files[0])}/>
-        </Form.Group>
+          <Form.Label>Upload File (.stl, .obj)</Form.Label>
+          <Form.Control 
+            type="file" 
+            accept=".stl, .obj" 
+            onChange={(e) => setFile(e.target.files[0])}
+          />
+      </Form.Group>
 
         <Form.Group className="mb-3">
           <Form.Label>Notes</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Enter notes"
+            placeholder="Enter notes (color, PLA or ABS, etc.)"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
           />

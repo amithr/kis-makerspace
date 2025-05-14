@@ -17,7 +17,7 @@ function Landing() {
           <Stack direction="horizontal" gap={3} className="mx-3">
             <h6 className="text-danger">Learn about &rarr;</h6>
             <a href="/" className="text-danger hover-underline"><h6>3D Printing</h6></a>
-            <a href="/" className="text-danger hover-underline"><h6>Laser Engraving</h6></a>
+            <a href="/" className="text-danger hover-underline"><h6>Laser Cutter (Coming soon)</h6></a>
           </Stack>
         </Row>
         <Row id="workload">

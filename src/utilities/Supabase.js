@@ -145,7 +145,7 @@ export async function updateRequest(id, field, newValue) {
   return data;
 }
 
-export async function deleteRequest(id) {
+export async function deleteRequest(id, fileUrl) {
   const { data, error } = await supabase
     .from('requests')
     .delete()
@@ -155,8 +155,20 @@ export async function deleteRequest(id) {
     console.error(`Error deleting record with id ${id} from ${table}:`, error);
     return null;
   }
-
+  await deleteFile(fileUrl);
   return data;
+}
+
+async function deleteFile(file_url) {
+  console.log(file_url);
+  const { data, error } = await supabase
+  .storage
+  .from('kis-makerspace-files') // replace with your actual bucket name
+  .remove([file_url]); // replace with your extracted path
+
+  if (error) {
+    console.error('Error deleting file:', error.message);
+  }
 }
 
 export async function generateRequestDownloadLink(file_url) {

@@ -40,10 +40,9 @@ function LoginBar() {
   }
 
   return (
-    <Stack direction="horizontal" gap={3}>
+    <Stack direction="horizontal" gap={3} className="flex-column flex-md-row align-items-start">
       <a href="/" className="text-decoration-none"><h1 className="text-danger">KIS Makerspace  <i className="bi bi-gear"></i></h1></a>
-      <div className="ms-auto d-flex gap-2">
-      <i className="bi bi-instagram fs-3 text-danger"></i>
+      <div className="ms-md-auto d-flex flex-column flex-md-row gap-2">
       <p> </p>
         {user ? (
           <>

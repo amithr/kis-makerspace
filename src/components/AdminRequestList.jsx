@@ -20,9 +20,9 @@ function AdminRequestList() {
     return date.toLocaleString(); // or use .toLocaleDateString() for just the date
   };
 
-  async function removeRequest(id) {
-    const data = await deleteRequest(id);
-    setRequests(prevRequests => prevRequests.filter(request => request.id !== id));
+  async function removeRequest(requestId, fileUrl) {
+    const data = await deleteRequest(requestId, fileUrl);
+    setRequests(prevRequests => prevRequests.filter(request => request.id !== requestId));
   }
   async function updateStatus(requestId, requestEmailAddress, newStatus) {
     let subject = "";
@@ -82,7 +82,7 @@ function AdminRequestList() {
                     </td>
                     <td><Button variant="success" as="a" href={request.signed_link} download>Download</Button></td>
                     <td>{formatDate(request.created_at)}</td>
-                    <td><Button variant="danger" onClick={() => removeRequest(request.id)}>Delete</Button></td>
+                    <td><Button variant="danger" onClick={() => removeRequest(request.id, request.file_url)}>Delete</Button></td>
                 </tr>
             ))}
             </tbody>
