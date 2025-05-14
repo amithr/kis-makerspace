@@ -152,15 +152,16 @@ export async function deleteRequest(id, fileUrl) {
     .eq('id', id);
 
   if (error) {
-    console.error(`Error deleting record with id ${id} from ${table}:`, error);
+    console.error(`Error deleting record with id ${id}:`, error);
     return null;
+  } else {
+    await deleteFile(fileUrl); 
   }
-  await deleteFile(fileUrl);
+
   return data;
 }
 
 async function deleteFile(file_url) {
-  console.log(file_url);
   const { data, error } = await supabase
   .storage
   .from('kis-makerspace-files') // replace with your actual bucket name
