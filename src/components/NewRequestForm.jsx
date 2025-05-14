@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Form, Button, Row, Col, Alert } from "react-bootstrap";
-import { uploadFile, createRequest, sendEmail, getCurrentUser, getUserEmail } from '../utilities/Supabase';
+import { uploadFile, createRequest, sendEmail, getCurrentUser, getUserEmail, supabase } from '../utilities/Supabase';
 import confetti from "canvas-confetti";
 
 function RequestForm() {
