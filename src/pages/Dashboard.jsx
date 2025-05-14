@@ -8,6 +8,7 @@ import NewRequestForm from '../components/NewRequestForm';
 import { getCurrentUser } from '../utilities/Supabase';
 import { useState, useEffect } from 'react';
 import LoginBar from '../components/LoginBar';
+import { Turnstile } from '@marsidev/react-turnstile'
 
 
 

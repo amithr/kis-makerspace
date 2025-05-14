@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Form, Button, Row, Col, Alert } from "react-bootstrap";
 import { uploadFile, createRequest, sendEmail, getCurrentUser, getUserEmail } from '../utilities/Supabase';
 import confetti from "canvas-confetti";
@@ -9,11 +9,30 @@ function RequestForm() {
   const [notes, setNotes] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const turnstileRef = useRef(null);
+
+  useEffect(() => {
+    if (window.turnstile && turnstileRef.current) {
+      window.turnstile.render(turnstileRef.current, {
+        sitekey: "0x4AAAAAABdKnGaLIp7yGO9t", // 🔁 Replace this
+        callback: function (token) {
+          setCaptchaToken(token);
+        },
+      });
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSuccessMessage("");
     setErrorMessage("");
+
+    if (!captchaToken) {
+      setErrorMessage("Please complete the CAPTCHA.");
+      return;
+    }
+      
     console.log(file);
     try {
       // Get current user
@@ -30,6 +49,19 @@ function RequestForm() {
       };
     
       const result = await createRequest(requestData);
+
+      // Step 1: Verify CAPTCHA
+      const captchaRes = await fetch("https://ikzwpgecawpusbzznpob.supabase.co/functions/v1/CAPTCHA", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: captchaToken }),
+      });
+
+      const verified = await captchaRes.json();
+      if (!verified.success) {
+        setErrorMessage("CAPTCHA verification failed.");
+        return;
+      }
 
       if (result) {
         // ✅ Trigger confetti
@@ -96,6 +128,8 @@ function RequestForm() {
             onChange={(e) => setNotes(e.target.value)}
           />
         </Form.Group>
+
+        <div className="mb-3" ref={turnstileRef}></div>
 
         <Button variant="danger" type="submit">
           Submit Request
