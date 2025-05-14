@@ -18,11 +18,11 @@ function Landing() {
             <Stack direction="vertical" gap={2}>
               <h3>How to Get Started</h3>
               <i className="bi bi-person-plus text-danger fs-1"></i>
-              <p className="fs-5">Register using your KIS email address.</p>
+              <p className="fs-5">Register using your KIS email address by clicking on the "Login/Register" button. You'll receive an email where you'll need to confirm your registration before logging in.</p>
               <i className="bi bi-box-arrow-up text-danger fs-1"></i>
-              <p className="fs-5">Submit a request. This involves selecting whether you would like something 3D printed or engraved using the laser cutter and uploading the relevant file.</p>
+              <p className="fs-5">Submit a 3D printing request by clicking on the "Request" button.</p>
               <i className="bi bi-envelope text-danger fs-1"></i>
-              <p className="fs-5">Receive an email letting you know that your order is ready and pick it up from Mr. Amith!</p>
+              <p className="fs-5">Receive an email when your request is complete! (Make sure to check your junk mail). </p>
             </Stack>
           </Col>
           <Col xs={12} md={6} lg={6} className="mb-3 px-3 d-flex flex-column align-items-center">
