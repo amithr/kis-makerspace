@@ -27,62 +27,72 @@ function RequestForm() {
     e.preventDefault();
     setSuccessMessage("");
     setErrorMessage("");
-
+  
     if (!captchaToken) {
       setErrorMessage("Please complete the CAPTCHA.");
       return;
     }
-      
+  
     console.log(file);
+  
     try {
-      // Get current user
-      const user = await getCurrentUser();
+      // Get current user session and info
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError || !session) {
+        throw new Error("Unable to retrieve user session.");
+      }
+  
+      const user = session.user;
+  
       // Upload file
       const response = await uploadFile(file);
-      
+  
       const requestData = {
-        user_id: user.id, // now using actual user ID
+        user_id: user.id,
         type,
         file_url: response.path,
         status: "Received",
         notes,
       };
-    
+  
       const result = await createRequest(requestData);
-
-      // Step 1: Verify CAPTCHA
+  
+      // ✅ Step 1: Verify CAPTCHA with Authorization header
       const captchaRes = await fetch("https://ikzwpgecawpusbzznpob.supabase.co/functions/v1/CAPTCHA", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session.access_token}`, // <- ✅ Required header
+        },
         body: JSON.stringify({ token: captchaToken }),
       });
-
+  
       const verified = await captchaRes.json();
       if (!verified.success) {
         setErrorMessage("CAPTCHA verification failed.");
         return;
       }
-
+  
       if (result) {
-        // ✅ Trigger confetti
         confetti({
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
         });
+  
         setSuccessMessage("✅ Request submitted successfully!");
-
-        console.log(getUserEmail(user.id))
-
+  
+        const userEmail = await getUserEmail(user.id);
+  
         await sendEmail({
-          to: await getUserEmail(user.id),
+          to: userEmail,
           subject: "Request submitted",
-          html: "<p>Congratulations, you have successfully submitted your request! You'll receive more email updates on it's status soon.</p>",
+          html: "<p>Congratulations, you have successfully submitted your request! You'll receive more email updates on its status soon.</p>",
         });
-
       } else {
         setErrorMessage("❌ Failed to submit request. Please try again.");
       }
+  
     } catch (err) {
       setErrorMessage("❌ Error: " + err.message);
     }
