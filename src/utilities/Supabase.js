@@ -146,6 +146,7 @@ export async function updateRequest(id, field, newValue) {
 }
 
 export async function deleteRequest(id, fileUrl) {
+  console.log('ID: ' + id);
   const { data, error } = await supabase
     .from('requests')
     .delete()

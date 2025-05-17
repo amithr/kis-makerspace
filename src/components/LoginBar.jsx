@@ -47,7 +47,7 @@ function LoginBar() {
         {user ? (
           <>
             <Button variant="danger" onClick={goHome}>Home</Button>
-            <Button variant="danger" onClick={goToDashboard}>Requests</Button>
+            <Button variant="danger" onClick={goToDashboard}>Submit a Request</Button>
             <Button variant="danger" onClick={logout}>Logout</Button>
           </>
         ) : (

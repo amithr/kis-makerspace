@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 
 
-function RequestList({ criteria = {}}) {
+function RequestList({ criteria = {}, updateTrigger}) {
     const { excludeStatuses, userId, shouldBeFiltered} = criteria;
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -24,7 +24,7 @@ function RequestList({ criteria = {}}) {
         fetchData();
         // const interval = setInterval(fetchData, 1000); // every 1 second
         // return () => clearInterval(interval);
-    }, [excludeStatuses, userId]);
+    }, [excludeStatuses, userId, updateTrigger]);
 
     const formatDate = (timestamp) => {
         const date = new Date(timestamp);

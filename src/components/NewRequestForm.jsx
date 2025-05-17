@@ -3,15 +3,17 @@ import { Form, Button, Row, Col, Alert } from "react-bootstrap";
 import { uploadFile, createRequest, sendEmail, getCurrentUser, getUserEmail } from '../utilities/Supabase';
 import confetti from "canvas-confetti";
 
-function RequestForm() {
+function RequestForm({triggerRequestListUpdate}) {
   const [type, setType] = useState("3D Printer");
   const [file, setFile] = useState(null)
   const [notes, setNotes] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     setSuccessMessage("");
     setErrorMessage("");
     console.log(file);
@@ -33,6 +35,7 @@ function RequestForm() {
 
       if (result) {
         // ✅ Trigger confetti
+        setLoading(false);
         confetti({
           particleCount: 100,
           spread: 70,
@@ -47,6 +50,8 @@ function RequestForm() {
           subject: "Request submitted",
           html: "<p>Congratulations, you have successfully submitted your request! You'll receive more email updates on it's status soon.</p>",
         });
+
+        triggerRequestListUpdate();
 
       } else {
         setErrorMessage("❌ Failed to submit request. Please try again.");
@@ -66,41 +71,50 @@ function RequestForm() {
       {errorMessage && (
         <Alert variant="danger" onClose={() => setErrorMessage("")} dismissible>
           {errorMessage}
-       </Alert>
+        </Alert>
       )}
-      <Form onSubmit={handleSubmit}>
-        <Row className="mb-3">
-          <Col>
-            <Form.Label>Type</Form.Label>
-            <Form.Select value={type} onChange={(e) => setType(e.target.value)}>
-              <option value="3D Printer">3D Printer</option>
-            </Form.Select>
-          </Col>
-        </Row>
-
-        <Form.Group className="mb-3">
-          <Form.Label>Upload File (.stl, .obj)</Form.Label>
-          <Form.Control 
-            type="file" 
-            accept=".stl, .obj" 
-            onChange={(e) => setFile(e.target.files[0])}
-          />
-      </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label>Notes</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter notes (color, PLA or ABS, etc.)"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-          />
-        </Form.Group>
-
-        <Button variant="danger" type="submit">
-          Submit Request
-        </Button>
-      </Form>
+  
+      {loading ? (
+        <div className="text-center my-5">
+          <div className="spinner-border text-dark" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      ) : (
+        <Form onSubmit={handleSubmit}>
+          <Row className="mb-3">
+            <Col>
+              <Form.Label>Type</Form.Label>
+              <Form.Select value={type} onChange={(e) => setType(e.target.value)}>
+                <option value="3D Printer">3D Printer</option>
+              </Form.Select>
+            </Col>
+          </Row>
+  
+          <Form.Group className="mb-3">
+            <Form.Label>Upload File (.stl, .obj)</Form.Label>
+            <Form.Control 
+              type="file" 
+              accept=".stl, .obj" 
+              onChange={(e) => setFile(e.target.files[0])}
+            />
+          </Form.Group>
+  
+          <Form.Group className="mb-3">
+            <Form.Label>Notes</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter notes (color, PLA or ABS, etc.)"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+            />
+          </Form.Group>
+  
+          <Button variant="danger" type="submit">
+            Submit Request
+          </Button>
+        </Form>
+      )}
     </>
   );
 }

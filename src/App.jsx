@@ -12,12 +12,19 @@ import NotFound from './pages/NotFound';
 function App() {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true)
+  const [hasProfile, setHasProfile] = useState(true)
 
   useEffect(() => {
-    // 1. Check current session
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setLoading(false)
+
+      // If the user is logged in, make sure that there is a session attached with their account
+      // The profile table contains additional user data and this helps prevent all sorts of weird errors that might otherwise occur.
+      if(session) {
+        checkProfile(session);
+      }
     });
 
     // 2. Listen for session changes
@@ -29,6 +36,22 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  const checkProfile = async (session) => {
+    const { data: profile, error } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("id", session.user.id) // Use the user ID, not email
+      .maybeSingle();
+
+    if (error || !profile) {
+      console.warn("No profile found — signing out...");
+      setHasProfile(false);
+      await supabase.auth.signOut(); // 👈 Force logout
+      return;
+    } 
+    setHasProfile(true); 
+  }
+
   if (loading) return <div>Loading...</div> 
 
   return (
@@ -39,14 +62,14 @@ function App() {
           <Route 
             path="admin" 
             element={
-              session && session.user.email === "amith-ravindar@kyiv.qsi.org"
+              session && session.user.email === "amith-ravindar@kyiv.qsi.org" && hasProfile
                 ? <Admin />
                 : <Navigate to="/login" />
             } 
           />
           <Route 
             path="dashboard" 
-            element={session ? <Dashboard /> : <Navigate to="/login" />} 
+            element={session && hasProfile ? <Dashboard /> : <Navigate to="/login" />} 
           />
           <Route 
             path="login" 

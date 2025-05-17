@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { supabase } from '../utilities/Supabase';
+import confetti from "canvas-confetti";
 
-function RegistrationForm() {
+function RegistrationForm({ updateRequestList }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -14,6 +15,7 @@ function RegistrationForm() {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -26,6 +28,7 @@ function RegistrationForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     setError("");
     setSuccess("");
   
@@ -80,23 +83,27 @@ function RegistrationForm() {
             // Add any other fields from formData you want
           },
         ]);
-      
+
+        // If user is added successfully, but profile is not, user will still remain inactive
         if (insertError) {
           console.error(insertError);
           setError("Failed to create user profile. Please try again.");
           return;
+        } else {
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+          });
+          setSuccess("Registration successful! Check your email to confirm your registration.");
         }
-      
-        console.log("Form Submitted:", data);
-        setSuccess("Registration successful! Redirecting to dashboard...");
-        
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 2000);
         
       } catch (err) {
         console.error("Unexpected error:", err);
         setError("An unexpected error occurred.");
+      } finally {
+        updateRequestList();
+        setLoading(false);
       }
   };  
 
@@ -105,74 +112,84 @@ function RegistrationForm() {
       <Row className="justify-content-md-center">
         <Col className="px-3">
           <h2 className="mb-4">Registration Form</h2>
+  
           {error && <Alert variant="danger">{error}</Alert>}
           {success && <Alert variant="success">{success}</Alert>}
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="formName">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter your name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formEmail">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter your email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formAge">
-              <Form.Label>Age</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Enter your age"
-                name="age"
-                value={formData.age}
-                onChange={handleChange}
-                required
-                min="0"
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Enter your password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formConfirmPassword">
-              <Form.Label>Confirm Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Confirm your password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-
-            <Button variant="danger" type="submit">
-              Submit
-            </Button>
-          </Form>
+  
+          {loading ? (
+            <div className="text-center my-5">
+              <div className="spinner-border text-dark" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          ) : (
+            <Form onSubmit={handleSubmit}>
+              <Form.Group className="mb-3" controlId="formName">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter your name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+  
+              <Form.Group className="mb-3" controlId="formEmail">
+                <Form.Label>Email address</Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="Enter your email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+  
+              <Form.Group className="mb-3" controlId="formAge">
+                <Form.Label>Age</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Enter your age"
+                  name="age"
+                  value={formData.age}
+                  onChange={handleChange}
+                  required
+                  min="0"
+                />
+              </Form.Group>
+  
+              <Form.Group className="mb-3" controlId="formPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Enter your password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+  
+              <Form.Group className="mb-3" controlId="formConfirmPassword">
+                <Form.Label>Confirm Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Confirm your password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+  
+              <Button variant="danger" type="submit">
+                Submit
+              </Button>
+            </Form>
+          )}
         </Col>
       </Row>
     </Container>

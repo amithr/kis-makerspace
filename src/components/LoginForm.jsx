@@ -32,11 +32,30 @@ function LoginForm() {
       return;
     }
 
+
+
     try {
+
+        // First fetch the profile to deal with the condition where the user may have been successfully created, but the profile was not (for whatever reason)
+        // I couldn't find a better way to deal with this, because there was no way to interrupt the signInWithPassword method.
+        const { data: profile, profileError } = await supabase
+          .from("profiles")
+          .select("email_address")
+          .eq("email_address", formData.email)
+          .maybeSingle();
+
+        if (profileError || !profile) {
+          setError("Failed to fetch profile - contact Mr. Amith.");
+          return;
+        }
+
+        // If there's no issue with the profile, then go ahead and sign in.
+
         const { error } = await supabase.auth.signInWithPassword({
           email: formData.email,
           password: formData.password,
         });
+
       
         if (error) {
           console.error("Login error:", error.message);
