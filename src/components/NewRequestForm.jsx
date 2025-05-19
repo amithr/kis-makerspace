@@ -51,6 +51,12 @@ function RequestForm({triggerRequestListUpdate}) {
           html: "<p>Congratulations, you have successfully submitted your request! You'll receive more email updates on it's status soon.</p>",
         });
 
+        await sendEmail({
+          to: "amith-ravindar@kyiv.qsi.org",
+          subject: user.email + " submitted a request.",
+          html: "<p>A new request has been submitted by." + user.email + "</p>",
+        });
+
         triggerRequestListUpdate();
 
       } else {
