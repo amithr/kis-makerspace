@@ -134,14 +134,19 @@ export async function updateRecordById({ table, id, updates }) {
 }
 
 export async function updateRequest(id, field, newValue) {
-  const data = updateRecordById(
-      {
-          table: 'requests',
-          id: id,
-          updates: {[field]: newValue}
-      }
-  )
-  
+  const { data, error } = await updateRecordById({
+    table: 'requests',
+    id: id,
+    updates: { [field]: newValue }
+  });
+
+  console.log(data);
+
+  if (error) {
+    console.error("Update failed:", error.message);
+    return null;
+  }
+
   return data;
 }
 

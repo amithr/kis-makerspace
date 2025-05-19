@@ -28,21 +28,30 @@ function AdminRequestList() {
     let subject = "";
     let message = "";
 
-    updateRequest(requestId, 'status', newStatus);
+    await updateRequest(requestId, 'status', newStatus);
+
+    console.log(newStatus);
     
     switch(newStatus) {
       case "In-Progress":
         subject = "Request in-progress."
         message = "<p>Your request is currently being processed. You will receive another email when it is complete.</p>"
+        break;
       case "Ready for Pickup":
         subject = "Request is ready for pickup."
         message = "<p>Stop by Mr. Amith's room to pick up your request!</p>"
+        break;
+      default:
+        subject = "Request Update";
+        message = "<p>Your request status has changed.</p>";
     }
-    const result = await sendEmail({
-      to: requestEmailAddress,
-      subject: subject,
-      html: message,
-    });
+
+    // const result = await sendEmail({
+    //   to: requestEmailAddress,
+    //   subject: subject,
+    //   html: message,
+    // });
+    
   }
 
   return (
