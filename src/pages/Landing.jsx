@@ -18,11 +18,11 @@ function Landing() {
             <Stack direction="vertical" gap={2}>
               <h3>How to Get Started</h3>
               <i className="bi bi-person-plus text-danger fs-1"></i>
-              <p className="fs-5">Register using your KIS email address by clicking on the "Login/Register" button. You'll receive an email where you'll need to confirm your registration before logging in.</p>
+              <p className="fs-5">Register using your KIS email address by clicking on the "Login/Register" button.</p>
               <i className="bi bi-box-arrow-up text-danger fs-1"></i>
-              <p className="fs-5">Submit a 3D printing request by clicking on the "Submit a Request" button.</p>
+              <p className="fs-5">Submit a 3D printing request by clicking on the "Submit a Request" button. You can easily create a 3D model in <a href="http://www.tinkercad.com">Tinkercad</a> and then export the ".stl" file.</p>
               <i className="bi bi-envelope text-danger fs-1"></i>
-              <p className="fs-5">Receive an email when your request is complete! (Make sure to check your junk mail). </p>
+              <p className="fs-5">Check the homepage to see when your request is "Ready for Pickup."</p>
             </Stack>
           </Col>
           <Col xs={12} md={6} lg={6} className="mb-3 px-3 d-flex flex-column align-items-center">
