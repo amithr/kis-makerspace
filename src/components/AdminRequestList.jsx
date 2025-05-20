@@ -29,8 +29,6 @@ function AdminRequestList() {
     let message = "";
 
     await updateRequest(requestId, 'status', newStatus);
-
-    console.log(newStatus);
     
     switch(newStatus) {
       case "In-Progress":

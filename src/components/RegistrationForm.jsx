@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from '../utilities/Supabase';
 import confetti from "canvas-confetti";
 
-function RegistrationForm({ updateRequestList }) {
+function RegistrationForm() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -40,10 +40,10 @@ function RegistrationForm({ updateRequestList }) {
       return;
     }
   
-    if (!emailRegex.test(formData.email)) {
-      setError("Email must be a kyiv.qsi.org email address.");
-      return;
-    }
+    // if (!emailRegex.test(formData.email)) {
+    //   setError("Email must be a kyiv.qsi.org email address.");
+    //   return;
+    // }
   
     if (parseInt(formData.age, 10) >= 100) {
       setError("Age must be less than 100.");
@@ -87,23 +87,25 @@ function RegistrationForm({ updateRequestList }) {
         // If user is added successfully, but profile is not, user will still remain inactive
         if (insertError) {
           console.error(insertError);
+          setLoading(false);
           setError("Failed to create user profile. Please try again.");
           return;
         } else {
+          setLoading(false);
           confetti({
             particleCount: 100,
             spread: 70,
             origin: { y: 0.6 },
           });
-          setSuccess("Registration successful! Check your email to confirm your registration.");
+          setSuccess("Registration successful!");
+          navigate('/dashboard')
         }
         
       } catch (err) {
         console.error("Unexpected error:", err);
         setError("An unexpected error occurred.");
       } finally {
-        updateRequestList();
-        setLoading(false);
+        // Send the user straight to the dashboard after registering.
       }
   };  
 
