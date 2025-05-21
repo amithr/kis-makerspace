@@ -96,7 +96,7 @@ export async function uploadFile(file) {
     return data;
 }
 
-export async function createRequest({ user_id, type, file_url, notes, status }) {
+export async function createRequest({ user_id, type, file_url, description, notes, status }) {
   const { data, error } = await supabase
     .from('requests')
     .insert([
@@ -104,6 +104,7 @@ export async function createRequest({ user_id, type, file_url, notes, status }) 
         user_id: user_id,
         type: type,
         file_url: file_url,
+        description: description,
         notes: notes,
         status: status,
       }

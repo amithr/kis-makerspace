@@ -62,7 +62,9 @@ function AdminRequestList() {
                 <th>Status</th>
                 <th>Type</th>
                 <th>Download</th>
+                <th>Description</th>
                 <th>Date Submitted</th>
+                <th>ETA</th>
                 </tr>
             </thead>
             <tbody>
@@ -88,7 +90,18 @@ function AdminRequestList() {
                         }}
                         />
                     </td>
-                    <td><Button variant="success" as="a" href={request.signed_link} download>Download</Button></td>
+                    <td>
+                    {request?.signed_link ? (
+                      <Button variant="success" as="a" href={request.signed_link} download>
+                        Download
+                      </Button>
+                    ) : (
+                      <Button variant="secondary" disabled>
+                        No file
+                      </Button>
+                    )}
+                    </td>
+                    <td>{request.description}</td>
                     <td>{formatDate(request.created_at)}</td>
                     <td><EditableDateTime initialValue={request.created_at} 
                         onSave={(newDateTime) => {

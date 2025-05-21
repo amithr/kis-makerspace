@@ -7,6 +7,7 @@ function RequestForm({triggerRequestListUpdate}) {
   const [type, setType] = useState("3D Printer");
   const [file, setFile] = useState(null)
   const [notes, setNotes] = useState("");
+  const [requestDescription, setRequestDescription] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,14 +21,21 @@ function RequestForm({triggerRequestListUpdate}) {
     try {
       // Get current user
       const user = await getCurrentUser();
-      // Upload file
-      const response = await uploadFile(file);
+
+      let fileUrl = null;
+
+      // Upload file only if one exists
+      if (file) {
+        const response = await uploadFile(file);
+        fileUrl = response.path;
+      }
       
       const requestData = {
         user_id: user.id, // now using actual user ID
         type,
-        file_url: response.path,
+        file_url: fileUrl,
         status: "Received",
+        description: requestDescription,
         notes,
       };
     
@@ -42,8 +50,6 @@ function RequestForm({triggerRequestListUpdate}) {
           origin: { y: 0.6 },
         });
         setSuccessMessage("✅ Request submitted successfully!");
-
-        console.log(getUserEmail(user.id))
 
         // await sendEmail({
         //   to: await getUserEmail(user.id),
@@ -96,13 +102,23 @@ function RequestForm({triggerRequestListUpdate}) {
               </Form.Select>
             </Col>
           </Row>
-  
+           
           <Form.Group className="mb-3">
             <Form.Label>Upload File (.stl, .obj, .zip)</Form.Label>
             <Form.Control 
               type="file" 
               accept=".stl, .obj, .zip" 
               onChange={(e) => setFile(e.target.files[0])}
+            />
+          </Form.Group>
+          <p>or</p>
+          <Form.Group className="mb-3">
+            <Form.Label>Describe your Request</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Boat, pistol, etc."
+              value={requestDescription}
+              onChange={(e) => setRequestDescription(e.target.value)}
             />
           </Form.Group>
   
