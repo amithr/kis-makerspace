@@ -98,7 +98,7 @@ function RequestForm({triggerRequestListUpdate}) {
           </Row>
   
           <Form.Group className="mb-3">
-            <Form.Label>Upload File (.stl, .obj, .zip (for multiple files))</Form.Label>
+            <Form.Label>Upload File (.stl, .obj, .zip)</Form.Label>
             <Form.Control 
               type="file" 
               accept=".stl, .obj, .zip" 
