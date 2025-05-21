@@ -44,6 +44,7 @@ function RequestList({ criteria = {}, updateTrigger}) {
               <th>Status</th>
               <th>Type</th>
               <th>Date Submitted</th>
+              <th>ETA</th>
             </tr>
           </thead>
           <tbody>
@@ -54,6 +55,7 @@ function RequestList({ criteria = {}, updateTrigger}) {
                 <td>{request.status}</td>
                 <td>{request.type}</td>
                 <td>{formatDate(request.created_at)}</td>
+                <td>{formatDate(request.estimated_completion_datetime)}</td>
               </tr>
             ))}
           </tbody>

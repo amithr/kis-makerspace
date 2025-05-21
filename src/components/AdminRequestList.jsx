@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getAllRequests, updateRequest, deleteRequest, sendEmail } from '../utilities/Supabase';
 import Table from 'react-bootstrap/Table';
 import EditableSelect from './EditableSelect';
+import EditableDateTime from './EditableDateTime';
 import Button from 'react-bootstrap/Button';
 
 function AdminRequestList() {
@@ -89,6 +90,11 @@ function AdminRequestList() {
                     </td>
                     <td><Button variant="success" as="a" href={request.signed_link} download>Download</Button></td>
                     <td>{formatDate(request.created_at)}</td>
+                    <td><EditableDateTime initialValue={request.created_at} 
+                        onSave={(newDateTime) => {
+                          updateRequest(request.id, 'estimated_completion_datetime', newDateTime)
+                        }}
+                    /></td>
                     <td><Button variant="danger" onClick={() => removeRequest(request.id, request.file_url)}>Delete</Button></td>
                 </tr>
             ))}
