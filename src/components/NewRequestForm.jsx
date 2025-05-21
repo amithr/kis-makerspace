@@ -98,10 +98,10 @@ function RequestForm({triggerRequestListUpdate}) {
           </Row>
   
           <Form.Group className="mb-3">
-            <Form.Label>Upload File (.stl, .obj)</Form.Label>
+            <Form.Label>Upload File (.stl, .obj, .zip (for multiple files))</Form.Label>
             <Form.Control 
               type="file" 
-              accept=".stl, .obj" 
+              accept=".stl, .obj, .zip" 
               onChange={(e) => setFile(e.target.files[0])}
             />
           </Form.Group>
