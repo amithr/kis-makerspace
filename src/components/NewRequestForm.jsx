@@ -51,11 +51,11 @@ function RequestForm({triggerRequestListUpdate}) {
         });
         setSuccessMessage("✅ Request submitted successfully!");
 
-        // await sendEmail({
-        //   to: await getUserEmail(user.id),
-        //   subject: "Request submitted",
-        //   html: "<p>Congratulations, you have successfully submitted your request! You'll receive more email updates on it's status soon.</p>",
-        // });
+        await sendEmail({
+          to: await getUserEmail(user.id),
+          subject: "Request submitted",
+          html: "<p>Congratulations, you have successfully submitted your request! You'll receive more email updates on it's status soon.</p>",
+        });
 
         await sendEmail({
           to: "amith-ravindar@kyiv.qsi.org",
