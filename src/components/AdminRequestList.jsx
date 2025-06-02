@@ -45,11 +45,11 @@ function AdminRequestList() {
         message = "<p>Your request status has changed.</p>";
     }
 
-    // const result = await sendEmail({
-    //   to: requestEmailAddress,
-    //   subject: subject,
-    //   html: message,
-    // });
+    const result = await sendEmail({
+      to: requestEmailAddress,
+      subject: subject,
+      html: message,
+    });
     
   }
 
